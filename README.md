@@ -8,7 +8,10 @@ some hooks or just load all SQLAlchemy ORM models so relationships work.
 The module loader idea is based on what Django does using `AppConfig`'s - so if you know those you might find this
 pretty straight forward.
 
-# Example FastAPI setup
+**Note:** `fastapi-module-loader` is compatible with Python `3.10`, `3.11`, `3.12`, `3.13` and `3.14`.
+This is also ensured running all tests on all those versions using `tox`.
+
+## Example FastAPI setup
 
 Lets say we are using the following folder structure in your project, `modules` may contain a list of modules
 used by your application:
@@ -65,7 +68,7 @@ app = FastAPI(lifespan=lifespan)
 # ...put the actual FastAPI code here
 ```
 
-# Use cases
+## Use cases
 
 Those are some use cases we encountered while working on projects. Those use cases led us to create this library:
 
@@ -78,9 +81,9 @@ Those are some use cases we encountered while working on projects. Those use cas
 * There will be many additional use cases for using the module loader. If you have any interesting use case please
   open an issue and tell us about it. 😉
 
-# Technical details
+## Technical details
 
-## Basic structure
+### Basic structure
 
 The class `ModuleLoader` is the main entry point for the module loader system. It needs to be instantiated with a
 list of modules as strings. You have to initialize the module loader in some global place for your application. This
@@ -111,7 +114,7 @@ The actual loading process then works like this:
    Note that `loader.setup()` will actually call `pre_setup()`, then `setup()` and finally `post_setup()` on the 
    modules. This allows you to have different stages of your setup process.
 
-## Module structure
+### Module structure
 
 A module is a class that inherits from `BaseModule`. It may implement the `setup()` and other methods as hooks. All
 methods will be called on module loading/setup.
@@ -127,7 +130,7 @@ class SomethingModule(BaseModule):
         print("Hello world!")
 ```
 
-## Loading process
+### Loading process
 
 `loader.load()` will import all the modules and then call the `load()` method on them. This is the place where you
 should load further modules if you need to.
@@ -149,7 +152,7 @@ from yourapp.loader import loader  # Import has to match your own setup
 loader.setup()  # will call pre_setup(), setup() and then post_setup() on all modules
 ```
 
-## Loading further modules in `load()`
+### Loading further modules in `load()`
 
 It is a very common use case to load further modules in the `setup()` method. To support this use case the `BaseModule`
 class provides a method `load_in_module()` then will load given module names inside the current module scope.
@@ -184,7 +187,7 @@ yourapp
 into the `__init__.py` file of the module. Otherwise the module loader will not be able to find the module you want
 it to load.
 
-## Integrating the module loader
+### Integrating the module loader
 
 To ensure everything is setup properly you should just call the methods mentioned above. This may for example look
 like this:
@@ -200,7 +203,7 @@ loader.setup()
 # Put the actual code here
 ```
 
-## Exceptions
+### Exceptions
 
 The module loader will raise `ImproperlyConfiguredModules` if anything went wrong during handling the modules and
 loading those, this includes:
@@ -212,7 +215,7 @@ Note however that all exceptions raised by the `setup()` method of the modules w
 loader will not catch now handle them. This is also the case if a modules to be loaded by `Self.load_in_module()`
 does not exist. Generally you have to handle those errors in `setup()` yourself.
 
-# Contributing
+## Contributing
 
 If you want to contribute to this project, feel free to just fork the project,
 create a dev branch in your fork and then create a pull request (PR). If you
