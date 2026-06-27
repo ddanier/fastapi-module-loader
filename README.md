@@ -111,7 +111,7 @@ The actual loading process then works like this:
    you can use this hook to load additional modules or similar.
 2. The `loader.setup()` will execute the `setup()` method of all the modules. This is where the modules should do
    additional setup work like resolving `ForwardRef`'s or registering hooks.  
-   Note that `loader.setup()` will actually call `pre_setup()`, then `setup()` and finally `post_setup()` on the 
+   Note that `loader.setup()` will actually call `pre_setup()`, then `setup()` and finally `post_setup()` on the
    modules. This allows you to have different stages of your setup process.
 
 ### Module structure
